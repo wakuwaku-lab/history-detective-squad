@@ -1,0 +1,109 @@
+:root {
+  --color-primary: #8b4513;
+  --color-secondary: #d4a574;
+  --color-accent: #ffd700;
+  --color-bg: #fdf5e6;
+  --color-bg-dark: #3d2914;
+  --color-text: #2c1810;
+  --color-text-light: #f5f5dc;
+  --color-success: #228b22;
+  --color-warning: #daa520;
+  --color-danger: #b22222;
+  
+  --font-family: 'Noto Serif SC', 'SimSun', serif;
+  --font-family-heading: 'Ma Shan Zheng', cursive;
+  
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+  --shadow-glow: 0 0 20px rgba(255, 215, 0, 0.5);
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 500ms ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background: linear-gradient(135deg, var(--color-bg) 0%, #f5e6d3 100%);
+  color: var(--color-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  font-weight: normal;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes starBurst {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+}
+
+.gold-text {
+  background: linear-gradient(135deg, #ffd700 0%, #ffec8b 50%, #ffd700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ink-wash {
+  background-image: 
+    radial-gradient(ellipse at 20% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 50%);
+}
+
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-secondary) var(--color-bg);
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: var(--color-bg);
+  border-radius: var(--radius-full);
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: var(--color-secondary);
+  border-radius: var(--radius-full);
+}

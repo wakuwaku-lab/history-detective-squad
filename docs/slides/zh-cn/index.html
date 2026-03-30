@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史奇探团 - 中国历史冒险游戏</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #1a1510;
+            --bg-secondary: #2a2318;
+            --bg-tertiary: #3d3425;
+            --text-primary: #f5f0e6;
+            --text-secondary: #b8a88a;
+            --accent: #c9a55c;
+            --accent-glow: rgba(201, 165, 92, 0.3);
+            --border: rgba(201, 165, 92, 0.2);
+            --font-display: 'Noto Serif SC', serif;
+            --font-body: 'Noto Sans SC', sans-serif;
+            --title-size: clamp(2rem, 6vw, 4.5rem);
+            --h2-size: clamp(1.5rem, 4vw, 2.5rem);
+            --h3-size: clamp(1.125rem, 2.5vw, 1.75rem);
+            --body-size: clamp(0.75rem, 1.2vw, 1.125rem);
+            --slide-padding: clamp(1.5rem, 4vw, 4rem);
+            --content-gap: clamp(1rem, 2vw, 2rem);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.7s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            height: 100%;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            height: 100%;
+            line-height: 1.6;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            padding: var(--slide-padding);
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(ellipse at 20% 80%, rgba(201, 165, 92, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(201, 165, 92, 0.05) 0%, transparent 40%),
+                linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%);
+            pointer-events: none;
+        }
+
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(201, 165, 92, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(201, 165, 92, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: var(--title-size);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5em;
+            letter-spacing: 0.02em;
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: var(--h2-size);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--content-gap);
+        }
+
+        h3 {
+            font-family: var(--font-display);
+            font-size: var(--h3-size);
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.75em;
+        }
+
+        p {
+            font-size: var(--body-size);
+            color: var(--text-secondary);
+            max-width: 65ch;
+        }
+
+        .tagline {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: var(--accent);
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            margin-bottom: 1em;
+        }
+
+        .subtitle {
+            font-size: var(--body-size);
+            color: var(--text-secondary);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+            gap: clamp(1rem, 2vw, 1.5rem);
+            margin-top: var(--content-gap);
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: clamp(1rem, 2vw, 1.5rem);
+            transition: transform 0.3s var(--ease-out-expo), border-color 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+        }
+
+        .feature-card h3 {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            margin-bottom: 0.5em;
+        }
+
+        .feature-card p {
+            font-size: clamp(0.7rem, 1vw, 0.9rem);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75em;
+        }
+
+        .list li {
+            font-size: var(--body-size);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75em;
+        }
+
+        .list li::before {
+            content: "◆";
+            color: var(--accent);
+            font-size: 0.6em;
+            margin-top: 0.4em;
+            flex-shrink: 0;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(1.5rem, 3vw, 3rem);
+            align-items: start;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .tech-tag {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            padding: 0.4em 0.8em;
+            border-radius: 6px;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            color: var(--text-secondary);
+        }
+
+        .code-block {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: clamp(0.65rem, 1vw, 0.85rem);
+            color: var(--accent);
+            overflow-x: auto;
+        }
+
+        .era-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: clamp(0.65rem, 1vw, 0.9rem);
+        }
+
+        .era-table th,
+        .era-table td {
+            padding: 0.75em 1em;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .era-table th {
+            color: var(--accent);
+            font-weight: 500;
+            font-family: var(--font-display);
+        }
+
+        .era-table td {
+            color: var(--text-secondary);
+        }
+
+        .hero {
+            text-align: center;
+        }
+
+        .hero .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 7vw, 5rem);
+        }
+
+        .hero .tagline {
+            font-size: clamp(1.125rem, 2.5vw, 1.75rem);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: var(--slide-padding);
+            left: var(--slide-padding);
+            right: var(--slide-padding);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: clamp(0.65rem, 1vw, 0.8rem);
+            color: var(--text-secondary);
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.3s;
+        }
+
+        .nav-dots {
+            position: fixed;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-dot.active {
+            background: var(--accent);
+            transform: scale(1.3);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity var(--duration-normal) var(--ease-out-expo),
+                        transform var(--duration-normal) var(--ease-out-expo);
+        }
+
+        .visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .visible .reveal:nth-child(1) { transition-delay: 0.1s; }
+        .visible .reveal:nth-child(2) { transition-delay: 0.2s; }
+        .visible .reveal:nth-child(3) { transition-delay: 0.3s; }
+        .visible .reveal:nth-child(4) { transition-delay: 0.4s; }
+        .visible .reveal:nth-child(5) { transition-delay: 0.5s; }
+        .visible .reveal:nth-child(6) { transition-delay: 0.6s; }
+
+        @media (max-width: 768px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(1rem, 3vw, 2rem);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal {
+                transition: opacity 0.3s ease;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <!-- Slide 1: Title -->
+    <section class="slide hero">
+        <div class="bg-pattern"></div>
+        <div class="bg-grid"></div>
+        <div class="slide-content">
+            <div class="logo reveal">🏛️</div>
+            <h1 class="reveal">历史奇探团</h1>
+            <p class="tagline reveal">穿越时空的中国历史冒险游戏</p>
+            <p class="subtitle reveal">探索中华五千年文明的精彩故事</p>
+        </div>
+        <div class="footer reveal">
+            <span>Author: <a href="https://github.com/exiahuang" target="_blank">exia.huang</a></span>
+            <span>Project: <a href="https://wakuwaku-lab.github.io/history-detective-squad" target="_blank">history-detective-squad</a></span>
+        </div>
+    </section>
+
+    <!-- Slide 2: Project Intro -->
+    <section class="slide">
+        <div class="bg-pattern"></div>
+        <div class="slide-content">
+            <h2 class="reveal">项目简介</h2>
+            <p class="reveal" style="font-size: clamp(1rem, 2vw, 1.25rem); max-width: 70ch;">
+                <strong>历史奇探团</strong> 是一个以中国历史为主题的教育冒险游戏。玩家扮演一名年轻的"历史小探"，穿越不同的历史时期，通过解谜、答题、收集历史人物卡牌，成为真正的历史大师。
+            </p>
+        </div>
+        <div class="footer reveal">
+            <span>历史奇探团</span>
+            <span>教育冒险游戏</span>
+        </div>
+    </section>
+
+    <!-- Slide 3: Features - Timeline Map -->
+    <section class="slide">
+        <div class="bg-pattern"></div>
+        <div class="slide-content">
+            <h2 class="reveal">特色功能</h2>
+            <div class="feature-grid">
+                <div class="feature-card reveal">
+                    <div class="feature-icon">🗺️</div>
+                    <h3>历史时光地图</h3>
+                    <ul class="list">
+                        <li>六大历史时期：先秦、秦汉、三国、隋唐、宋元、明清</li>
+                        <li>迷雾解锁机制，通过完成探案任务逐步解锁新区域</li>
+                        <li>精美的中国风视觉设计</li>
+                    </ul>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">🔍</div>
+                    <h3>探案任务系统</h3>
+                    <ul class="list">
+                        <li>每个时代都有多个探案任务</li>
+                        <li>题目涵盖历史人物、重大事件、文化成就</li>
+                        <li>难度分级：简单、中等、困难</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 4: Features - Detective & Collection -->
+    <section class="slide">
+        <div class="bg-pattern"></div>
+        <div class="slide-content">
+            <div class="feature-grid">
+                <div class="feature-card reveal">
+                    <div class="feature-icon">👤</div>
+                    <h3>侦探养成系统</h3>
+                    <ul class="list">
+                        <li>等级成长：见习侦探 → 初级侦探 → 高级侦探 → 侦探大师 → 传奇侦探</li>
+                        <li>经验值获取，完成案件获得积分</li>
+                        <li>成就系统，解锁专属徽章</li>
+                    </ul>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">👥</div>
+                    <h3>历史人物图鉴</h3>
+                    <ul class="list">
+                        <li>收集各个时期的历史名人</li>
+                        <li>了解他们的成就和贡献</li>
+                        <li>技能标签展示人物特点</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: Tech Stack -->
+    <section class="slide">
+        <div class="bg-pattern"></div>
+        <div class="slide-content">
+            <h2 class="reveal">技术栈</h2>
+            <div class="tech-stack reveal">
+                <span class="tech-tag">React 19</span>
+                <span class="tech-tag">TypeScript</span>
+                <span class="tech-tag">Vite 6</span>
+                <span class="tech-tag">Framer Motion</span>
+                <span class="tech-tag">Zustand</span>
+                <span class="tech-tag">Lucide React</span>
+                <span class="tech-tag">clsx</span>
+            </div>
+            <div class="two-col" style="margin-top: 2rem;">
+                <div class="reveal">
+                    <h3>快速开始</h3>
+                    <div class="code-block">
+# 安装依赖<br>
+pnpm install<br><br>
+# 启动开发服务器<br>
+pnpm dev<br><br>
+# 构建生产版本<br>
+pnpm build
+                    </div>
+                </div>
+                <div class="reveal">
+                    <h3>访问地址</h3>
+                    <p style="font-size: 1rem; color: var(--accent); margin-top: 0.5rem;">
+                        http://localhost:3000/history-detective-squad/
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 6: Project Structure -->
+    <section class="slide">
+        <div class="bg-pattern"></div>
+        <div class="slide-content">
+            <h2 class="reveal">项目结构</h2>
+            <div class="code-block reveal" style="margin-top: 1rem;">
+src/<br>
+├── components/<br>
+│   ├── common/          # 通用组件 (Header)<br>
+│   ├── map/             # 地图组件 (TimelineMap, EraDetail)<br>
+│   ├── quiz/            # 答题组件 (Quiz)<br>
+│   └── detective/       # 侦探系统 (DetectiveProfile)<br>
+├── stores/              # Zustand 状态管理<br>
+├── data/                # 游戏数据<br>
+├── types/               # TypeScript 类型定义<br>
+└── styles/              # 全局样式
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: Game Design -->
+    <section class="slide">
+        <div class="bg-pattern"></div>
+        <div class="slide-content">
+            <h2 class="reveal">游戏设计理念</h2>
+            <div class="feature-grid">
+                <div class="feature-card reveal">
+                    <h3>🎮 游戏化学习</h3>
+                    <p>通过探案、解谜的方式学习历史知识</p>
+                </div>
+                <div class="feature-card reveal">
+                    <h3>🔓 渐进式解锁</h3>
+                    <p>完成当前任务才能解锁新区域，保持玩家动力</p>
+                </div>
+                <div class="feature-card reveal">
+                    <h3>🏆 成就系统</h3>
+                    <p>通过收集历史人物、解锁成就建立成就感</p>
+                </div>
+                <div class="feature-card reveal">
+                    <h3>🎨 中国风设计</h3>
+                    <p>使用中国传统色彩和元素，营造沉浸感</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8: Historical Periods -->
+    <section class="slide">
+        <div class="bg-pattern"></div>
+        <div class="slide-content">
+            <h2 class="reveal">历史时期设计</h2>
+            <table class="era-table reveal">
+                <thead>
+                    <tr>
+                        <th>时期</th>
+                        <th>时代特点</th>
+                        <th>代表人物</th>
+                        <th>重要事件</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>先秦</td>
+                        <td>诸子百家</td>
+                        <td>孔子、老子</td>
+                        <td>百家争鸣</td>
+                    </tr>
+                    <tr>
+                        <td>秦汉</td>
+                        <td>大一统</td>
+                        <td>秦始皇</td>
+                        <td>统一六国</td>
+                    </tr>
+                    <tr>
+                        <td>三国</td>
+                        <td>英雄辈出</td>
+                        <td>刘备、曹操、诸葛亮</td>
+                        <td>赤壁之战</td>
+                    </tr>
+                    <tr>
+                        <td>隋唐</td>
+                        <td>盛世繁华</td>
+                        <td>唐太宗</td>
+                        <td>贞观之治</td>
+                    </tr>
+                    <tr>
+                        <td>宋元</td>
+                        <td>科技文化</td>
+                        <td>毕昇、岳飞</td>
+                        <td>四大发明</td>
+                    </tr>
+                    <tr>
+                        <td>明清</td>
+                        <td>封建末期</td>
+                        <td>郑和</td>
+                        <td>下西洋</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Slide 9: Screenshots -->
+    <section class="slide">
+        <div class="bg-pattern"></div>
+        <div class="slide-content">
+            <h2 class="reveal">游戏截图</h2>
+            <p class="reveal" style="margin-bottom: 1.5rem;">游戏界面采用中国古典风格设计：</p>
+            <div class="feature-grid reveal">
+                <div class="feature-card">
+                    <h3>🎨 视觉设计</h3>
+                    <p>米黄色背景配深棕色主色调</p>
+                </div>
+                <div class="feature-card">
+                    <h3>✨ 金色点缀</h3>
+                    <p>卡片和徽章采用金色装饰</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚡ 流畅动画</h3>
+                    <p>过渡效果流畅自然</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 10: Future Plans -->
+    <section class="slide">
+        <div class="bg-pattern"></div>
+        <div class="slide-content">
+            <h2 class="reveal">未来计划</h2>
+            <ul class="list reveal" style="margin-top: 1rem;">
+                <li>添加更多历史时期和探案任务</li>
+                <li>实现离线存储功能</li>
+                <li>添加故事情节模式</li>
+                <li>多人对战答题系统</li>
+                <li>导出成就证书功能</li>
+            </ul>
+        </div>
+        <div class="footer reveal">
+            <span>MIT License</span>
+            <span>Made with ❤️ for Chinese history education</span>
+        </div>
+    </section>
+
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.progressBar = document.getElementById('progressBar');
+                this.navDots = document.getElementById('navDots');
+                this.currentSlide = 0;
+                this.init();
+            }
+
+            init() {
+                this.createNavDots();
+                this.bindEvents();
+                this.updateSlide();
+                this.setupIntersectionObserver();
+            }
+
+            createNavDots() {
+                this.slides.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'nav-dot';
+                    dot.addEventListener('click', () => this.goToSlide(index));
+                    this.navDots.appendChild(dot);
+                });
+            }
+
+            bindEvents() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        this.nextSlide();
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        this.prevSlide();
+                    }
+                });
+
+                let touchStartY = 0;
+                document.addEventListener('touchstart', (e) => {
+                    touchStartY = e.touches[0].clientY;
+                });
+                document.addEventListener('touchend', (e) => {
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const diff = touchStartY - touchEndY;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) this.nextSlide();
+                        else this.prevSlide();
+                    }
+                });
+
+                window.addEventListener('scroll', () => this.updateSlide());
+            }
+
+            setupIntersectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const index = Array.from(this.slides).indexOf(entry.target);
+                            this.currentSlide = index;
+                            this.updateNavDots();
+                            this.updateProgressBar();
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+
+            updateSlide() {
+                const scrollTop = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const currentIndex = Math.round(scrollTop / windowHeight);
+                if (currentIndex !== this.currentSlide) {
+                    this.currentSlide = currentIndex;
+                    this.updateNavDots();
+                    this.updateProgressBar();
+                }
+            }
+
+            updateNavDots() {
+                const dots = this.navDots.querySelectorAll('.nav-dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === this.currentSlide);
+                });
+            }
+
+            updateProgressBar() {
+                const progress = ((this.currentSlide + 1) / this.slides.length) * 100;
+                this.progressBar.style.width = progress + '%';
+            }
+
+            nextSlide() {
+                if (this.currentSlide < this.slides.length - 1) {
+                    this.goToSlide(this.currentSlide + 1);
+                }
+            }
+
+            prevSlide() {
+                if (this.currentSlide > 0) {
+                    this.goToSlide(this.currentSlide - 1);
+                }
+            }
+
+            goToSlide(index) {
+                this.slides[index].scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        new SlidePresentation();
+    </script>
+</body>
+</html>
